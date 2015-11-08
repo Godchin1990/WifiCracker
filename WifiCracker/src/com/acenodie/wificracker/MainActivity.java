@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -19,7 +20,7 @@ public class MainActivity extends Activity {
 	// 组件信息
 	private ListView lv_wifi_info;
 
-	//
+	//这个对象用来管理WIFI设备
 	private WifiManager mWifiManager;
 	private BroadcastReceiver mReceiver;
 
@@ -44,9 +45,12 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		final IntentFilter filter = new IntentFilter(
+		//手动注册广播接受者：用于接受查询到的wifi扫描结果
+		IntentFilter filter = new IntentFilter(
 				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
 		registerReceiver(mReceiver, filter);
+		
+		//开始扫描
 		mWifiManager.startScan();
 	}
 
@@ -55,6 +59,7 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 
+		//销毁这个广播接受者，即不会接收到广播
 		unregisterReceiver(mReceiver);
 	}
 
@@ -69,6 +74,8 @@ public class MainActivity extends Activity {
 		adapter = new WifiListAdapter(this, mScanResults);
 		
 		mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		
+		WifiInfo mWifiInfo = mWifiManager.getConnectionInfo();
 
 		mReceiver = new BroadcastReceiver() {
 
@@ -79,9 +86,11 @@ public class MainActivity extends Activity {
 
 				if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
 					
+					//接受到的WIFI数据
 					mScanResults = mWifiManager.getScanResults();
 					
 					adapter.setData(mScanResults);
+					
 					
 					mWifiManager.startScan();
 				}

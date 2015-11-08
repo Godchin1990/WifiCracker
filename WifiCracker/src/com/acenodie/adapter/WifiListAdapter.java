@@ -70,9 +70,11 @@ public class WifiListAdapter extends BaseAdapter {
 
 		ScanResult result = mScanResults.get(position);
 
-		viewHolder.item_tv_ssid.setText(result.SSID);
-		viewHolder.item_tv_bsssid.setText(result.BSSID);
-		viewHolder.item_tv_level.setText(result.level + "");
+		viewHolder.item_tv_ssid.setText("SSID: " + result.SSID);
+		viewHolder.item_tv_bsssid.setText("BSSID: " + result.BSSID);
+		viewHolder.item_tv_level.setText("ÐÅºÅÇ¿¶ÈLevel £º " + result.level + "dBm" 
+				+ "\ncapabilities: " + result.capabilities
+				+ "\nfrequency: " + result.frequency);
 
 		return convertView;
 	}
